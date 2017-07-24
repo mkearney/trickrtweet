@@ -1,0 +1,21 @@
+Package: trickrtweet
+Type: Package
+Title: Twitter Networking
+Version: 0.0.1
+Date: 2017-07-19
+Authors@R: person("Michael W.", "Kearney", "", "kearneymw@missouri.edu", c("aut", "cre"))
+Description: Building your Twitter network using R.
+Depends:
+    R (>= 3.1.0)
+Imports:
+    dplyr,
+    rtweet
+License: MIT + file LICENSE
+LazyData: TRUE
+URL: https://github.com/mkearney/trickrtweet
+BugReports: https://github.com/mkearney/trickrtweet/issues
+RoxygenNote: 6.0.1
+Suggests:
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
