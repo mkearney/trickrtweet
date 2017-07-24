@@ -9,7 +9,7 @@
 \arguments{
 \item{keep}{Character vector of screen names or IDs to not unfollow.
 These are probably popular accounts that you don't expect reciprocity
-from. Default is NULL. If "../data/keepers.rds" exists, it will be
+from. Default is NULL. If there is a TWITTER_KEEPERS path, it will be
 read in and used regardless of whether this value is NULL.}
 }
 \value{
