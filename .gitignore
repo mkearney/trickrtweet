@@ -1,4 +1,6 @@
 data/keepers.rds
+data/friends.rds
+data/followers.rds
 working.R
 .Rhistory
 R/.Rhistory
