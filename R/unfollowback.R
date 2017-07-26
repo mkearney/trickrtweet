@@ -32,18 +32,19 @@ unfollowback <- function(keep = NULL, ...) {
 unfollowback.default <- function(keep = NULL) {
   user <- home_user()
   ## friends
-  fds <- rtweet::get_friends(user)
-  fds <- fds$user_id
+  fds <- get(".fds", envir = .trickrtweet)
   ## followers
-  flw <- rtweet::get_followers(user)
-  flw <- flw$user_id
+  flw <- get(".flw", envir = .trickrtweet)
   ## id people who don't follow back
   tounf <- fds[!fds %in% flw]
   if (length(tounf) == 0L) {
     message("No haters. Nothing but follow backs!")
     return(invisible())
   }
-  tu_users <- rtweet::lookup_users(tounf)
+  ## friends user data
+  fds_data <- get(".fds_data", envir = .trickrtweet)
+  ## subset to users to unfollow
+  tu_users <- fds_data[fds_data$user_id %in% tounf, ]
   ## keepers
   keepers <- Sys.getenv("TWITTER_KEEPERS")
   if (file.exists(keepers) && !identical("", keepers)) {
@@ -53,6 +54,7 @@ unfollowback.default <- function(keep = NULL) {
   if (!is.null(keep)) {
     kprs_data <- rtweet::lookup_users(keep)
     tounf <- tu_users$user_id[!tu_users$user_id %in% kprs_data$user_id]
+    saveRDS(keep, file = Sys.getenv("TWITTER_KEEPERS"))
   }
   ## final vector to unfollow
   tounf <- fds[fds %in% tounf]
@@ -72,8 +74,8 @@ unfollowback.default <- function(keep = NULL) {
 #' @importFrom rtweet post_unfollow_user
 unfollow_user <- function(..., sleeper = TRUE) {
   if (sleeper) {
-    ## sleep an average of 2 seconds per call
-    Sys.sleep(runif(1, .5, 3))
+    ## sleep an average of 2.5 seconds per call
+    Sys.sleep(runif(1, 1, 3))
   }
   post_unfollow_user(...)
 }

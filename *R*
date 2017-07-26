@@ -1,0 +1,127 @@
+
+R version 3.4.1 (2017-06-30) -- "Single Candle"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+##--------------------------------------------------------##
+##---------------------hello theRe!-----------------------##
+##--------------------------------------------------------##
+##--------------- Tue Jul 25 17:43:08 2017 ---------------##
+##--------------------------------------------------------##
+##--------------------------------------------------------##
+> > if(identical(getOption('pager'), file.path(R.home('bin'), 'pager'))) options(pager='cat') # rather take the ESS one 
+> options(STERM='iESS', str.dendrogram.last="'", editor='emacsclient', show.error.locations=TRUE)
+> devtools::load_all()
+Loading trickrtweet
+Ready to build your Twitter network!
+
+##----------------------------
+## LOADING DATA
+##----------------------------
+Screen name of home user is @kearneymw
+Twitter token validated.
+Unable to compile user data.
+Warning message:
+Invalid or expired token. 
+> regen_token
+function() {
+  message("1. Select your app in browser")
+  message("2. Click \"Keys and Access Tokens\"")
+  message("3. Click \"Regerate Token\"")
+  browseURL("https://apps.twitter.com/app/")
+  message("Let me know when you're done...")
+  r <- menu(
+    c("Yes, I've regenerated my token.",
+      "No, I don't want to do this right now.")
+  )
+  if (r == 2) return(invisible())
+  token <- rtweet::get_tokens()
+  token <- rtweet::create_token(
+    token$app$appname,
+    token$app$key,
+    token$app$secret
+  )
+  assign("token", token, envir = .trickrtweet)
+  invisible(token)
+}
+<environment: namespace:trickrtweet>
+> regen_token()
+1. Select your app in browser
+2. Click "Keys and Access Tokens"
+3. Click "Regerate Token"
+4. Let me know when you're done...
+
+1: Yes, I've regenerated my token.
+2: No, I don't want to do this right now.
+
+Selection: 1
+> devtools::load_all()
+Loading trickrtweet
+Ready to build your Twitter network!
+
+##----------------------------
+## LOADING DATA
+##----------------------------
+Screen name of home user is @kearneymw
+Twitter token validated.
+Unable to compile user data.
+Warning message:
+Invalid or expired token. 
+> regen_token()
+1. Select your app in browser
+2. Click "Keys and Access Tokens"
+3. Click "Regenerate Access Token and Token Secret"
+
+Let me know when you're done...
+
+1: Yes, I've regenerated my token.
+2: No, I don't want to do this right now.
+
+Selection: 1
+> token
+Error: object 'token' not found
+> get("token", envir = .trickrtweet)
+<Token>
+<oauth_endpoint>
+ request:   https://api.twitter.com/oauth/request_token
+ authorize: https://api.twitter.com/oauth/authenticate
+ access:    https://api.twitter.com/oauth/access_token
+<oauth_app> post_tw_app
+  key:    vLafjz2yH77mY5r2AGpyfzqwx
+  secret: <hidden>
+<credentials> oauth_token, oauth_token_secret, user_id, screen_name, x_auth_expires
+---
+> token <- get("token", envir = .trickrtweet)
+> get_friends("kearneymw", token = token)
+Error in get_friends("kearneymw", token = token) : 
+  could not find function "get_friends"
+> rtweet::get_friends("kearneymw", token = token)
+# A tibble: 2,630 x 2
+        user    user_id
+       <chr>      <dbl>
+ 1 kearneymw 1299060908
+ 2 kearneymw   35063411
+ 3 kearneymw  481186914
+ 4 kearneymw 1024751976
+ 5 kearneymw  237279906
+ 6 kearneymw 4519762168
+ 7 kearneymw 2469175266
+ 8 kearneymw   33118391
+ 9 kearneymw   44860754
+10 kearneymw  152857997
+# ... with 2,620 more rows
+> 

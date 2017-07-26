@@ -65,9 +65,7 @@ NULL
   }
 }
 
-.trickrtweet <- new.env()
-
-.state <- new.env(parent = emptyenv())
+.trickrtweet <- new.env(parent = emptyenv())
 
 home_user <- function() UseMethod("home_user")
 
