@@ -74,8 +74,8 @@ unfollowback.default <- function(keep = NULL) {
 #' @importFrom rtweet post_unfollow_user
 unfollow_user <- function(..., sleeper = TRUE) {
   if (sleeper) {
-    ## sleep an average of 2.5 seconds per call
-    Sys.sleep(runif(1, 1, 3))
+    ## sleep an average of 3.5 seconds per call
+    Sys.sleep(runif(1, 2, 4))
   }
   post_unfollow_user(...)
 }

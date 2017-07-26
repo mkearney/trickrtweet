@@ -23,6 +23,7 @@ no_retweets <- function(n = 1000L) {
 #' @importFrom rtweet post_follow
 #' @importFrom httr warn_for_status
 no_retweets.default <- function(n = 1000L) {
+  fds <- get(".fds", envir = .trickrtweet)
   f <- function(x) {
     for (i in seq_along(x)) {
       r <- rtweet::post_follow(x[i], retweets = FALSE)
