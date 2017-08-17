@@ -8,3 +8,4 @@ R/.Rhistory
 .httr-oauth
 .Rproj.user
 data/**
+.DS_Store
