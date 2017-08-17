@@ -6,3 +6,5 @@ working.R
 R/.Rhistory
 .#working
 .httr-oauth
+.Rproj.user
+data/**

@@ -9,7 +9,6 @@ NULL
 
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage("Ready to build your Twitter network!")
-  message("")
   message("##----------------------------")
   message("## LOADING DATA")
   message("##----------------------------")
@@ -120,9 +119,10 @@ get_user_data_obj <- function(data) {
   }
 }
 
-load_fds_data <- function() {
-  if (file.exists("/Users/mwk/trickrtweet/data/friends.rds")) {
-    fds_data <- readRDS("/Users/mwk/trickrtweet/data/friends.rds")
+load_fds_data <- function(home = getwd()) {
+  path <- file.path(home, "data/friends.rds")
+  if (file.exists(path)) {
+    fds_data <- readRDS(path)
     assign(".fds_data", fds_data, envir = .trickrtweet)
     fds_data
   } else {
@@ -130,9 +130,10 @@ load_fds_data <- function() {
   }
 }
 
-load_flw_data <- function() {
-  if (file.exists("/Users/mwk/trickrtweet/data/followers.rds")) {
-    flw_data <- readRDS("/Users/mwk/trickrtweet/data/followers.rds")
+load_flw_data <- function(home = getwd()) {
+  path <- file.path(home, "data/followers.rds")
+  if (file.exists(path)) {
+    flw_data <- readRDS(path)
     assign(".flw_data", flw_data, envir = .trickrtweet)
     flw_data
   } else {
@@ -141,7 +142,7 @@ load_flw_data <- function() {
 }
 
 
-home_user_data <- function() {
+home_user_data <- function(home = getwd()) {
   ##----------------------
   ## user account data
   ##----------------------
@@ -176,7 +177,8 @@ home_user_data <- function() {
   ## store in .trickrtweet
   assign(".fds_data", fds_data, envir = .trickrtweet)
   ## save data
-  saveRDS(fds_data, "/Users/mwk/trickrtweet/data/friends.rds")
+  path <- file.path(home, "data/friends.rds")
+  saveRDS(fds_data, path)
 
   ##----------------------
   ## get followers
@@ -204,6 +206,7 @@ home_user_data <- function() {
   }
   ## store in environment and save to data file
   assign(".flw_data", flw_data, envir = .trickrtweet)
-  saveRDS(flw_data, "/Users/mwk/trickrtweet/data/followers.rds")
+  path <- file.path(home, "data/followers.rds")
+  saveRDS(fds_data, path)
   return(invisible(TRUE))
 }
