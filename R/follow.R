@@ -6,6 +6,7 @@
 #' @param users Screen names or user IDs of users to follow.
 #' @return API response objects (invisibly)
 #' @importFrom rtweet post_follow
+#' @export
 follow_ <- function(users) {
   UseMethod("follow_")
 }
@@ -17,6 +18,7 @@ follow_ <- function(users) {
 #' @param users Screen names or user IDs of users to follow.
 #' @return API response objects (invisibly)
 #' @importFrom rtweet post_follow
+#' @export
 follow_.default <- function(users) {
   f <- function(x) {
     Sys.sleep(runif(1, 1, 3))
