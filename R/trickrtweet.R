@@ -1,3 +1,4 @@
+##----------------------------------------------------------------------------##
 #' @title trickrtweet
 #'
 #' @description trickrtweet is package used for growing your Twitter network.
@@ -9,64 +10,81 @@ NULL
 
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage("Ready to build your Twitter network!")
+  message("To view your Twitter stats, use the \"twitter_stats()\" function.")
+}
+
+#' twitter statistics
+#' 
+#' Displays Twitter statistics of home user and user network and returns 
+#'   friends and followers data.
+#' 
+#' @return Invisibly returns a list of friends, friends data, followers, 
+#'   and followers data
+#' @export
+twitter_stats <- function() {
+  eval(call("twitter_stats.default"))
+}
+
+twitter_stats.default <- function() {
   message("##----------------------------")
   message("## LOADING DATA")
-  message("##----------------------------")
+  message("##----------------------------\n")
   user <- home_user()
   message(paste0("Screen name of home user is @", user))
   x <- TRUE
-  x <- tryCatch(validate_token(), error = function(e) NULL)
-  if (is.null(x)) {
-    message("Invalid token. Please save path to token associated with home user's account")
-    message("as the \"TWITTER_PAT\" environment variable.")
-  } else {
-    message("Twitter token validated.")
-  }
-  x <- TRUE
+  validate_token()
+  message("\nTwitter token validated.\n")
+  message("Compiling user data...\n")
   x <- tryCatch(home_user_data(), error = function(e) NULL)
   if (is.null(x)) {
-    message("Unable to compile user data.")
-  } else {
-    
-    ## friends data
-    message("User data compiled.")
-    fds <- get(".fds", envir = .trickrtweet)
-    message("Friends identified.")
-    fds_data <- get(".fds_data", envir = .trickrtweet)
-    message("Friends data gathered.")
+    stop("Unable to compile user data.", call. = FALSE)
+  } 
+  ## friends data
+  fds <- get(".fds", envir = .trickrtweet)
+  message("Friends identified.")
+  fds_data <- get(".fds_data", envir = .trickrtweet)
+  message("Friends data gathered.")
 
-    ## followers data
-    flw <- get(".flw", envir = .trickrtweet)
-    message("Followers identified.")
-    flw_data <- get(".flw_data", envir = .trickrtweet)
-    message("Followers data gathered.")
+  ## followers data
+  flw <- get(".flw", envir = .trickrtweet)
+  message("Followers identified.")
+  flw_data <- get(".flw_data", envir = .trickrtweet)
+  message("Followers data gathered.")
 
-    ## calculate metrics
-    fds_fds <- round(median(fds_data$friends_count, na.rm = TRUE), 0)
-    fds_flw <- round(median(fds_data$followers_count, na.rm = TRUE), 0)
-    fds_ratio <- round(median(fds_data$followers_count / fds_data$friends_count, na.rm = TRUE), 2)
+  ## calculate metrics
+  fds_fds <- round(median(fds_data$friends_count, na.rm = TRUE), 0)
+  fds_flw <- round(median(fds_data$followers_count, na.rm = TRUE), 0)
+  fds_ratio <- round(median(fds_data$followers_count / 
+      fds_data$friends_count, na.rm = TRUE), 2)
 
-    message("\n##----------------------------")
-    message(paste0("## @", user, "'s friends:"))
-    message("##----------------------------")
-    ## submit messages
-    message(paste("Median number of friends' friends:", fds_fds))
-    message(paste("Median number of friends' followers:", fds_flw))
-    message(paste("Median follower-to-friend ratio:", fds_ratio))
-    message("\n##----------------------------")
-    message(paste0("## @", user, ":"))
-    message("##----------------------------")
+  message("\n##----------------------------")
+  message(paste0("## @", user, "'s friends:"))
+  message("##----------------------------")
+  ## submit messages
+  message(paste("Median number of friends' friends:", fds_fds))
+  message(paste("Median number of friends' followers:", fds_flw))
+  message(paste("Median follower-to-friend ratio:", fds_ratio))
+  message("\n##----------------------------")
+  message(paste0("## @", user, ":"))
+  message("##----------------------------")
 
-    message(paste0("@", user, " number of friends: ", length(fds)))
-    message(paste0("@", user, " number of followers: ", length(flw)))
-    message(paste0("@", user, " follower-to-friend ratio: ",
-                  round(length(flw) / length(fds), 2)))
-  }
+  message(paste0("@", user, " number of friends: ", length(fds)))
+  message(paste0("@", user, " number of followers: ", length(flw)))
+  message(paste0("@", user, " follower-to-friend ratio: ",
+                round(length(flw) / length(fds), 2)))
+  invisible(list(
+    fds = fds, 
+    fds_data = fds_data, 
+    flw = flw, 
+    flw_data = flw_data)
+  )
 }
 
 .trickrtweet <- new.env(parent = emptyenv())
 
-home_user <- function() UseMethod("home_user")
+home_user <- function() {
+  eval(call("home_user.default"))
+}
 
 home_user.default <- function() {
   if (!exists(".trickrtweet")) {
@@ -100,13 +118,23 @@ home_user.default <- function() {
 
 #' @importFrom rtweet get_tokens
 validate_token <- function() {
-  token <- rtweet::get_tokens()
-  if (identical(home_user(), token$credentials$screen_name)) {
-    return(invisible(TRUE))
+  token <- tryCatch(rtweet::get_tokens(), error = function(e) NULL)
+  if (is.null(token) || !inherits(token, "Token")) {
+    stop(paste0(
+      "Could not find token. Please save path to token associated with @",
+      home_user(), "'s account as the \"TWITTER_PAT\" environment variable."), 
+      call. = FALSE)
   }
-  message("Invalid token. Please save path to token associated with home user's account")
-  message("as the \"TWITTER_PAT\" environment variable.")
-  invisible(FALSE)
+  token_user <- token[["credentials"]][["screen_name"]]
+  if (!identical(home_user(), token_user)) {
+    stop(paste0(
+      "Invalid token. This token belongs to @", 
+      token_user, " and not @", home_user(), ".\n",
+      "Please save path to token associated with @", home_user(),
+      "'s account as the \"TWITTER_PAT\" environment variable."), 
+      call. = FALSE)
+  }
+  TRUE
 }
 
 get_user_data_obj <- function(data) {
@@ -119,7 +147,10 @@ get_user_data_obj <- function(data) {
   }
 }
 
-load_fds_data <- function(home = getwd()) {
+load_fds_data <- function(home = NULL) {
+  if (is.null(home)) {
+    home <- system.file(package = "trickrtweet")
+  }
   path <- file.path(home, "data/friends.rds")
   if (file.exists(path)) {
     fds_data <- readRDS(path)
@@ -130,7 +161,10 @@ load_fds_data <- function(home = getwd()) {
   }
 }
 
-load_flw_data <- function(home = getwd()) {
+load_flw_data <- function(home = NULL) {
+  if (is.null(home)) {
+    home <- system.file(package = "trickrtweet")
+  }
   path <- file.path(home, "data/followers.rds")
   if (file.exists(path)) {
     flw_data <- readRDS(path)
@@ -141,8 +175,10 @@ load_flw_data <- function(home = getwd()) {
   }
 }
 
-
-home_user_data <- function(home = getwd()) {
+home_user_data <- function(home = NULL) {
+  if (is.null(home)) {
+    home <- system.file(package = "trickrtweet")
+  }
   ##----------------------
   ## user account data
   ##----------------------

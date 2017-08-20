@@ -4,10 +4,12 @@
 \alias{no_retweets}
 \title{no_retweets}
 \usage{
-no_retweets(n = 1000L)
+no_retweets(n = 1000L, refresh = TRUE)
 }
 \arguments{
 \item{n}{Number of most recent users to mute retweets.}
+
+\item{refresh}{Logical indicating whether to refresh friends list.}
 }
 \value{
 API response object.
