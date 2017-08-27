@@ -11,7 +11,7 @@
 #' @importFrom rtweet post_follow
 #' @importFrom httr warn_for_status
 no_retweets <- function(n = 1000L, refresh = TRUE) {
-  UseMethod("no_retweets")
+  eval(call("no_retweets_", n = n, refresh = refresh))
 }
 
 #' no_retweets
@@ -24,7 +24,8 @@ no_retweets <- function(n = 1000L, refresh = TRUE) {
 #' @export
 #' @importFrom rtweet post_follow
 #' @importFrom httr warn_for_status
-no_retweets.default <- function(n = 1000L, refresh = TRUE) {
+no_retweets_ <- function(n = 1000L, refresh = TRUE) {
+  user <- home_user()
   if (refresh) {
     fds <- as.character(rtweet::get_friends(user)[["user_id"]])
     assign(".fds", fds, envir = .trickrtweet)
