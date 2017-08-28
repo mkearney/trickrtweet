@@ -11,11 +11,7 @@
 #' @importFrom rtweet post_follow
 #' @importFrom httr warn_for_status
 no_retweets <- function(n = 1000L, refresh = TRUE) {
-<<<<<<< HEAD
-  do.call("no_retweets_", list(n, refresh))
-=======
-  eval(call("no_retweets_", n = n, refresh = refresh))
->>>>>>> a0c786eca99a7f77431f993e3981969f313c1aea
+  do.call("no_retweets_", list(n = n, refresh = refresh))
 }
 
 #' no_retweets_
@@ -27,15 +23,9 @@ no_retweets <- function(n = 1000L, refresh = TRUE) {
 #' @return API response object.
 #' @importFrom rtweet post_follow
 #' @importFrom httr warn_for_status
-<<<<<<< HEAD
-no_retweets_ <- function(n, refresh) {
-  user <- home_user()
-  if (refresh || !".fds" %in% ls(envir = .trickrtweet, all.names = TRUE)) {
-=======
 no_retweets_ <- function(n = 1000L, refresh = TRUE) {
   user <- home_user()
-  if (refresh) {
->>>>>>> a0c786eca99a7f77431f993e3981969f313c1aea
+  if (refresh || !".fds" %in% ls(envir = .trickrtweet, all.names = TRUE)) {
     fds <- as.character(rtweet::get_friends(user)[["user_id"]])
     assign(".fds", fds, envir = .trickrtweet)
   } else {
