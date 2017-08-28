@@ -2,9 +2,15 @@
 % Please edit documentation in R/no_retweets.R
 \name{no_retweets_}
 \alias{no_retweets_}
+<<<<<<< HEAD:man/no_retweets_.Rd
 \title{no_retweets_}
 \usage{
 no_retweets_(n, refresh)
+=======
+\title{no_retweets}
+\usage{
+no_retweets_(n = 1000L, refresh = TRUE)
+>>>>>>> a0c786eca99a7f77431f993e3981969f313c1aea:man/no_retweets_.Rd
 }
 \arguments{
 \item{n}{Number of most recent users to mute retweets.}
