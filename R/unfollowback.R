@@ -47,13 +47,16 @@ unfollowback.default <- function(keep = NULL) {
   tu_users <- fds_data[fds_data$user_id %in% tounf, ]
   ## keepers
   keepers <- Sys.getenv("TWITTER_KEEPERS")
+  if (!is.null(keep)) {
+    keepdata <- lookup_users(keep)
+    keep <- keeptdata$user_id
+  }
   if (file.exists(keepers) && !identical("", keepers)) {
     keepers <- readRDS(keepers)
     keep <- c(keepers, keep)
   }
   if (!is.null(keep)) {
-    kprs_data <- rtweet::lookup_users(keep)
-    tounf <- tu_users$user_id[!tu_users$user_id %in% kprs_data$user_id]
+    tounf <- tu_users$user_id[!tu_users$user_id %in% keep]
     saveRDS(keep, file = Sys.getenv("TWITTER_KEEPERS"))
   }
   ## final vector to unfollow
