@@ -9,8 +9,10 @@
 NULL
 
 .onAttach <- function(libname, pkgname) {
-  packageStartupMessage("Ready to build your Twitter network!")
-  message("To view your Twitter stats, use the \"twitter_stats()\" function.")
+  if (interactive()) {
+    packageStartupMessage("Ready to build your Twitter network!")
+    message("To view your Twitter stats, use the \"twitter_stats()\" function.")
+  }
 }
 
 #' twitter statistics
@@ -99,21 +101,25 @@ home_user.default <- function() {
     return(user)
   }
   ## ask user for screen name
-  user <- readline("What is your screen name on Twitter?")
-  ## remove at sign
-  user <- gsub("@", "", user)
-  ## save as environment variable
-  message("Saving your Twitter screen name as environment variable")
-  cat(
-    paste0("TWITTER_SCREEN_NAME=", user),
-    fill = TRUE,
-    file = file.path(normalizePath("~"), ".Renviron"),
-    append = TRUE
-  )
-  ## store in pkg environment
-  assign(".user", user, envir = .trickrtweet)
-  ## return screen name
-  invisible(user)
+  if (interactive()) {
+    user <- readline("What is your screen name on Twitter?")
+    ## remove at sign
+    user <- gsub("@", "", user)
+    ## save as environment variable
+    message("Saving your Twitter screen name as environment variable")
+    cat(
+      paste0("TWITTER_SCREEN_NAME=", user),
+      fill = TRUE,
+      file = file.path(normalizePath("~"), ".Renviron"),
+      append = TRUE
+    )
+    ## store in pkg environment
+    assign(".user", user, envir = .trickrtweet)
+    ## return screen name
+    invisible(user)
+  } else {
+    stop("no screen_name for home user", call. = FALSE)
+  }
 }
 
 #' @importFrom rtweet get_tokens
