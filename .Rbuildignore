@@ -5,3 +5,4 @@
 ^\.Rproj\.user$
 track-network-size.R
 working.R
+^\.httr-oauth$
