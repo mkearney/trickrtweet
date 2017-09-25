@@ -147,7 +147,7 @@ get_user_data_obj <- function(data) {
   lgl <- exists(data, envir = .trickrtweet)
   if (lgl) {
     data <- get(data, envir = .trickrtweet)
-    return(data)
+    data
   } else {
     NULL
   }
@@ -204,13 +204,14 @@ home_user_data <- function(home = NULL) {
   }
   fds_data <- get_user_data_obj(".fds_data")
   ## if null then load
-  if (is.null(fds_data) || length(fds) == 0L) {
+  if (is.null(fds_data) || length(fds_data) == 0L) {
     fds_data <- load_fds_data()
     ## if still null then lookup
-    if (is.null(fds_data) || length(fds) == 0L) {
+    if (is.null(fds_data) || length(fds_data) == 0L) {
       fds_data <- rtweet::lookup_users(fds)
     }
   }
+  paste(fds[!fds %in% fds_data$user_id], collapse = ",")
   ## if it needs updating, then update
   if (any(!fds %in% fds_data$user_id, na.rm = TRUE)) {
     x <- rtweet::lookup_users(fds[!fds %in% fds_data$user_id])
@@ -220,8 +221,7 @@ home_user_data <- function(home = NULL) {
   assign(".fds_data", fds_data, envir = .trickrtweet)
   ## save data
   path <- file.path(home, "data/friends.rds")
-  saveRDS(fds_data, path)
-
+  
   ##----------------------
   ## get followers
   ##----------------------
@@ -234,10 +234,10 @@ home_user_data <- function(home = NULL) {
   ## get followers data
   flw_data <- get_user_data_obj(".flw_data")
   ## if null then load
-  if (is.null(flw_data) || length(flw) == 0L) {
+  if (is.null(flw_data) || length(flw_data) == 0L) {
     flw_data <- load_flw_data()
     ## if still null then lookup
-    if (is.null(flw_data) || length(flw) == 0L) {
+    if (is.null(flw_data) || length(flw_data) == 0L) {
       flw_data <- rtweet::lookup_users(flw)
     }
   }
