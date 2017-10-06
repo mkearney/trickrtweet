@@ -11,3 +11,5 @@ data/**
 .DS_Store
 follow-tweeps.R
 track-network-size.R
+make
+make.R
